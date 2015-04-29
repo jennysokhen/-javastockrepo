@@ -6,9 +6,16 @@ import java.text.SimpleDateFormat;
 
 public class Stock {
 	
+ 	public final static int BUY = 0;
+ 	public final static int SELL = 1;
+ 	public final static int REMOVE = 2;
+ 	public final static int HOLD = 3;
+	
 	private String symbol ;
 	private float ask, bid ;
 	private Date date ;
+	private int recommendation, stockQuantity;
+	
 	
 	public Stock (String symbol, float ask, float bid, Date date){
 			this.symbol = symbol ;
@@ -41,6 +48,18 @@ public class Stock {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	public int getStockQuantity() {
+		return stockQuantity;
+	}
+	public void setStockQuantity(int stockQuantity) {
+		this.stockQuantity = stockQuantity;
+	}
+	public int getRecommendation() {
+		return recommendation;
+	}
+	public void setRecommendation(int recommendation) {
+		this.recommendation = recommendation;
+	}
 	
 	public String getHtmlDescription () {
 		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy") ;
@@ -50,4 +69,6 @@ public class Stock {
 		String resultStr = new String ("<b>Stock symbol</b>: " +getSymbol()+ " <b>Bid</b>: " +getBid()+ " <b>Ask</b>: " +getAsk()+ "<b>Date</b>: " +dateStr+ "<br>") ;
 		return resultStr ;
 	}
+
+
 }
