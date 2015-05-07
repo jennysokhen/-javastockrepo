@@ -3,35 +3,11 @@
 xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="5">
-	<servlet>
-		<servlet-name>Javastockrepo</servlet-name>
-		<servlet-class>com.sokhen.JavastockrepoServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>Servlet02</servlet-name>
-		<servlet-class>com.sokhen.Servlet02</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>StockDetailsServlet</servlet-name>
-		<servlet-class>com.sokhen.StockDetailsServlet</servlet-class>
-	</servlet>
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="6">
 	<servlet>
 		<servlet-name>PortfolioServlet</servlet-name>
 		<servlet-class>com.sokhen.servlet.PortfolioServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>Javastockrepo</servlet-name>
-		<url-pattern>/javastockrepo</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>Servlet02</servlet-name>
-		<url-pattern>/servlet02</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>StockDetailsServlet</servlet-name>
-		<url-pattern>/stockdetails</url-pattern>
-	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PortfolioServlet</servlet-name>
 		<url-pattern>/portfolio</url-pattern>
