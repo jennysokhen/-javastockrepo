@@ -7,19 +7,26 @@ import java.text.SimpleDateFormat;
 //this class : stock and his details
 public class Stock {
 	
- 	public final static int BUY = 0;
- 	public final static int SELL = 1;
- 	public final static int REMOVE = 2;
- 	public final static int HOLD = 3;
+ 	public enum ALGO_RECOMMENDATION {
+ 		BUY(0), SELL(1), REMOVE(2), HOLD(3) ;
+ 		
+ 		private int num ;
+ 		private ALGO_RECOMMENDATION (int num) {
+ 			this.num = num ;
+ 		}
+ 		public int getNum () {
+ 			return num ;
+ 		}
+ 	}
 	
 	private String symbol ;
 	private float ask, bid ;
 	private Date date ;
-	private int recommendation = 0;
+	private ALGO_RECOMMENDATION recommendation ;
 	private int stockQuantity = 0;
 	
 	//ctor
-	public Stock (String symbol, float ask, float bid, Date date, int recommendation, int stockQuantity){
+	public Stock (String symbol, float ask, float bid, Date date){
 			this.symbol = symbol ;
 			this.ask = ask ;
 			this.bid = bid ;
@@ -69,10 +76,10 @@ public class Stock {
 	public void setStockQuantity(int stockQuantity) {
 		this.stockQuantity = stockQuantity;
 	}
-	public int getRecommendation() {
+	public ALGO_RECOMMENDATION getRecommendation() {
 		return recommendation;
 	}
-	public void setRecommendation(int recommendation) {
+	public void setRecommendation(ALGO_RECOMMENDATION recommendation) {
 		this.recommendation = recommendation;
 	}
 	
@@ -82,7 +89,7 @@ public class Stock {
 		String dateStr = new String() ;
 		dateStr = dateFormat.format( getDate() );
 		
-		String resultStr = new String ("<b>Stock symbol</b>: " +getSymbol()+ " <b>Bid</b>: " +getBid()+ " <b>Ask</b>: " +getAsk()+ "<b>Date</b>: " +dateStr+ "<br>") ;
+		String resultStr = new String ("<b>Stock symbol</b>: " +getSymbol()+ " <b> Bid</b>: " +getBid()+ " <b> Ask</b>: " +getAsk()+ "<b> Date</b>: " +dateStr+ "<b> Quantity</b>: " +getStockQuantity()+ "<br>") ;
 		return resultStr ;
 	}
 }
