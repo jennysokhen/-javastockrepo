@@ -1,15 +1,20 @@
 package com.sokhen.model;
 
-import com.sokhen.model.Stock.ALGO_RECOMMENDATION;
+import org.algo.model.PortfolioInterface;
+import org.algo.model.StockInterface;
 
 //this class : portfolio of stocks
-public class Portfolio {
+public class Portfolio implements PortfolioInterface {
+	
+ 	public enum ALGO_RECOMMENDATION {
+ 		BUY, SELL, REMOVE , HOLD 
+ 	}
 	
 	private String title;
 	private final static int MAX_PORTFOLIO_SIZE = 5;
-	private Stock[] stocks;
-	private int portfolioSize = 0;
-	private float balance = 0 ;
+	private StockInterface[] stocks;
+	private int portfolioSize ;
+	private float balance ;
 	
 	//getters and setters
 	public String getTitle() {
@@ -24,8 +29,8 @@ public class Portfolio {
 		return portfolioSize;
 	}
 	
-	public Stock[] getStocks() {
-		return stocks;
+	public StockInterface[] getStocks() {
+		return (StockInterface[]) stocks;
 	}
 
 	public void setStocks(Stock[] stocks) {
@@ -42,24 +47,31 @@ public class Portfolio {
 		this.balance = balance;
 	}
 	
-	//ctor
-	public Portfolio (String title) {
+	//empty ctor
+	public Portfolio () {
 		this.stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		this.portfolioSize = 0;
-		this.title = title;
+		this.title = new String("Temporary Title");
 		this.balance = 0;
 	}
 	
 	//copy-ctor
-	public Portfolio (Portfolio portfolio) {
-		this(portfolio.getTitle());
-		this.setPortfolioSize (portfolio.getPortfolioSize());
-		for (int i=0 ; i<portfolio.getPortfolioSize() ; i++ ){
-			this.stocks[i] = new Stock(portfolio.getStocks()[i]);
+	public Portfolio (StockInterface[] arr) {
+		this.title = new String("Temporary Title") ;
+		this.portfolioSize = arr.length;
+		for (int i=0 ; i<portfolioSize ; i++ ){
+			this.stocks[i] = new Stock((Stock)arr[i]);
 		}
-		this.balance = portfolio.balance ;
+		this.balance = 0 ;
 	}
-	
+
+	//ctor
+	public Portfolio (String title) {
+		this.stocks = new StockInterface[MAX_PORTFOLIO_SIZE];
+		this.portfolioSize = 0;
+		this.title = title ;
+		this.balance = 0;
+	}	
 	//updating the balance with the amount
 	public void updateBalance (float amount) {
 		this.balance += amount ;
@@ -67,7 +79,18 @@ public class Portfolio {
 			System.out.println("Balance is negative!");
 		}
 	}
-
+	
+	//copy-ctor
+ 	public Portfolio(Portfolio portfolio) {
+ 		this(portfolio.getTitle());
+ 		this.portfolioSize = portfolio.getPortfolioSize();
+ 		this.updateBalance(portfolio.getBalance()); 
+ 		
+ 		for (int i=0; i<portfolioSize; i++){
+ 			this.stocks[i] = new Stock((Stock) portfolio.getStocks()[i]);
+ 			}
+ 		}
+ 	
 	//adding stock to the array
 	public void addStock (Stock stock){
 		if (stock == null) {
@@ -75,7 +98,7 @@ public class Portfolio {
 			return ;
 		}
 		
-		if (portfolioSize == MAX_PORTFOLIO_SIZE) {
+		else if (portfolioSize == MAX_PORTFOLIO_SIZE) {
 			System.out.println("Portfolio is full!");
 			return ;
 		}
@@ -101,7 +124,7 @@ public class Portfolio {
 	public String getHtmlString () {
 		String str = new String ("<h1>Portfolio title: " + title + "</h1> <br>") ;
 		for (int i=0 ; i<portfolioSize ; i++) {
-			str = str + this.stocks[i].getHtmlDescription() + "<br>" ;
+			str = str + ((Stock) this.stocks[i]).getHtmlDescription() + "<br>" ;
 		}
 		str += "<b>Total Portfolio value:</b> " +getTotalValue() + "$, " ;
 		str += "<b>Total Stocks value:</b> " +getStocksValue() + "$, " ;
@@ -124,7 +147,7 @@ public class Portfolio {
 				
 				this.sellStock (this.stocks[i].getSymbol(), -1) ;
 				if (i != 0 && i != portfolioSize -1 ) {
-					this.stocks[i] = new Stock (this.stocks [portfolioSize-1]) ;
+					this.stocks[i] = new Stock ((Stock) this.stocks [portfolioSize-1]) ;
 				}
 				bool = true ;
 				this.portfolioSize -- ;
@@ -154,23 +177,21 @@ public class Portfolio {
 		
 		for (int i = 0 ; i < this.portfolioSize ; i ++) {
 			if (symbol.equals(this.stocks[i].getSymbol())) {
-				if (this.stocks[i].getStockQuantity() < quantity) {
+				if (((Stock) this.stocks[i]).getStockQuantity() < quantity) {
 					System.out.println("Not enough stocks to sell!") ;
 					return false ;
 				}
 				
 				if (quantity == -1) {
-					balance += this.stocks[i].getStockQuantity() * this.stocks[i].getBid() ;
-					this.stocks[i].setStockQuantity(0) ;
-					this.stocks[i].setRecommendation(ALGO_RECOMMENDATION.SELL) ;
+					balance += ((Stock) this.stocks[i]).getStockQuantity() * this.stocks[i].getBid() ;
+					((Stock) this.stocks[i]).setStockQuantity(0) ;
 					System.out.println("The stock is sold!") ;
 					return true ;
 				}
 				
 				//if i got here means the user want to sell valid num of stocks
 				balance += quantity * this.stocks[i].getBid() ;
-				this.stocks[i].setStockQuantity(this.stocks[i].getStockQuantity() - quantity) ;
-				this.stocks[i].setRecommendation(ALGO_RECOMMENDATION.SELL) ;
+				((Stock) this.stocks[i]).setStockQuantity(((Stock) this.stocks[i]).getStockQuantity() - quantity) ;
 				System.out.println(+quantity+ "The holdings are sold!") ;
 				return true ;
 			}
@@ -200,15 +221,13 @@ public class Portfolio {
 				if (quantity == -1) {
 					int temp = (int)balance / (int)this.stocks[i].getAsk() ;
 					balance -= temp * this.stocks[i].getAsk() ;
-					this.stocks[i].setStockQuantity(this.stocks[i].getStockQuantity() + temp) ;
-					this.stocks[i].setRecommendation(ALGO_RECOMMENDATION.BUY) ;
+					((Stock) this.stocks[i]).setStockQuantity(((Stock) this.stocks[i]).getStockQuantity() + temp) ;
 					System.out.println("You purchased the stock!") ;
 					return true ;
 				}
 				else {
 			        balance -= quantity * this.stocks[i].getAsk() ;
-				    this.stocks[i].setStockQuantity(this.stocks[i].getStockQuantity() + quantity) ;
-			     	this.stocks[i].setRecommendation(ALGO_RECOMMENDATION.BUY) ;					
+				    ((Stock) this.stocks[i]).setStockQuantity(((Stock) this.stocks[i]).getStockQuantity() + quantity) ;
 			     	System.out.println("You purchased" +quantity+ "holdings!") ;
 			        return true ;
 				}
@@ -223,16 +242,14 @@ public class Portfolio {
 			addStock(stock) ;
  			int temp = (int)balance / (int)this.stocks[i].getAsk() ;
 			balance -= temp * this.stocks[i].getAsk() ;
-			this.stocks[i].setStockQuantity(this.stocks[i].getStockQuantity() + temp) ;
-			this.stocks[i].setRecommendation(ALGO_RECOMMENDATION.BUY) ;
+			((Stock) this.stocks[i]).setStockQuantity(((Stock) this.stocks[i]).getStockQuantity() + temp) ;
 			System.out.println("You purchased the stock!") ;
 			return true ;
 		}
 		else {
 			addStock(stock) ;
 	        balance -= quantity * this.stocks[i].getAsk() ;
-		    this.stocks[i].setStockQuantity(this.stocks[i].getStockQuantity() + quantity) ;
-	     	this.stocks[i].setRecommendation(ALGO_RECOMMENDATION.BUY) ;					
+		    ((Stock) this.stocks[i]).setStockQuantity(((Stock) this.stocks[i]).getStockQuantity() + quantity) ;
 	     	System.out.println("You purchased" +quantity+ "holdings!") ;
 	        return true ;
 		}		
@@ -242,7 +259,7 @@ public class Portfolio {
 	public float getStocksValue() {
 		float res = 0 ;
 		for (int i = 0 ; i < this.portfolioSize ; i ++) {
-			res += this.stocks[i].getBid() * this.stocks[i].getStockQuantity() ;
+			res += this.stocks[i].getBid() * ((Stock) this.stocks[i]).getStockQuantity() ;
 		}
 		return res ;
 	}
@@ -251,4 +268,24 @@ public class Portfolio {
 	public float getTotalValue() {
 		return this.getStocksValue() + getBalance() ;
 	}
+	
+	//finding a stock and returning its place or -1 if not found
+	public int findStock (String stockToFind) {
+ 		for (int i = 0 ; i < this.portfolioSize ; i++) {
+ 			if (stockToFind.equals (this.stocks[i].getSymbol() )) {
+ 				return i ;
+ 			}
+ 		}
+ 		return -1 ;
+ 	}
+	//finding the place of a stock
+ 	public StockInterface findStockPlace (String stockToFind) {
+ 		int i = 0 ;
+ 		for (i = 0 ; i < this.portfolioSize ; i++) {
+ 			if (stockToFind.equals (this.stocks[i].getSymbol() )) {
+ 				return this.stocks[i] ;
+ 			}
+ 		}
+ 		return null ;
+ 	}
 }

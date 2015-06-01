@@ -4,8 +4,10 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.algo.model.StockInterface;
+
 //this class : stock and his details
-public class Stock {
+public class Stock implements StockInterface {
 	
  	public enum ALGO_RECOMMENDATION {
  		BUY(0), SELL(1), REMOVE(2), HOLD(3) ;
@@ -23,26 +25,27 @@ public class Stock {
 	private float ask, bid ;
 	private Date date ;
 	private ALGO_RECOMMENDATION recommendation ;
-	private int stockQuantity = 0;
+	private int stockQuantity ;
+	private DateFormat dateFt = new SimpleDateFormat("MM/dd/yyyy");
 	
 	//ctor
 	public Stock (String symbol, float ask, float bid, Date date){
-			this.symbol = symbol ;
-			this.ask = ask ;
-			this.bid = bid ;
-			this.date = date ;
-			this.recommendation = recommendation ;
-			this.stockQuantity = stockQuantity ;
+			this.symbol = new String() ;
+			this.ask = 0 ;
+			this.bid = 0 ;
+			this.date = new Date() ;
+			this.recommendation = ALGO_RECOMMENDATION.HOLD ;
+			this.stockQuantity = 0 ;
 	}
 	
 	//copy-ctor
-	public Stock (Stock stock){
-		this.symbol = stock.getSymbol() ;
-		this.ask = stock.getAsk() ;
-		this.bid = stock.getBid() ;
-		this.date = stock.getDate() ;
-		this.recommendation = stock.getRecommendation() ;
-		this.stockQuantity = stock.getStockQuantity() ;
+	public Stock (Stock stocks){
+		this.symbol = stocks.getSymbol() ;
+		this.ask = stocks.getAsk() ;
+		this.bid = stocks.getBid() ;
+		this.date = new Date (stocks.getDate().getTime()) ;
+		this.recommendation = stocks.getRecommendation() ;
+		this.stockQuantity = stocks.getStockQuantity() ;
 	}
 	
 	//getters and setters
@@ -85,9 +88,7 @@ public class Stock {
 	
 	//returning string with stock details
 	public String getHtmlDescription () {
-		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy") ;
-		String dateStr = new String() ;
-		dateStr = dateFormat.format( getDate() );
+		String dateStr = dateFt.format( date );
 		
 		String resultStr = new String ("<b>Stock symbol</b>: " +getSymbol()+ " <b> Bid</b>: " +getBid()+ " <b> Ask</b>: " +getAsk()+ "<b> Date</b>: " +dateStr+ "<b> Quantity</b>: " +getStockQuantity()+ "<br>") ;
 		return resultStr ;
