@@ -1,17 +1,10 @@
 package com.sokhen.service;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import org.algo.dto.PortfolioDto;
 import org.algo.dto.PortfolioTotalStatus;
 import org.algo.exception.PortfolioException;
 import org.algo.model.PortfolioInterface;
 import org.algo.service.PortfolioManagerInterface;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.sokhen.model.Portfolio; 
-import com.sokhen.model.Stock;
 
 //this class : managing portfolio and his stocks
 public class PortfolioManager implements PortfolioManagerInterface {
